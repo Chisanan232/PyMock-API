@@ -387,9 +387,9 @@ class TemplateConfigLoadable:
     _configuration: _BaseFileOperation = YAML()
 
     _valid_loader_keys: List[str] = [k.value for k in ConfigLoadingOrderKey]
-    _loaders: Dict[str, "TemplateConfigLoadable"] = {}
+    # _loaders: Dict[str, "TemplateConfigLoadable"] = {}
 
-    _template_config_opts: TemplateConfigOpts = field(default_factory=TemplateConfigOpts)
+    _template_config_opts: TemplateConfigOpts
 
     def __init__(self):
         # self._register_loader()  # FIXME: This code would be activated after refactoring done.
@@ -402,13 +402,13 @@ class TemplateConfigLoadable:
             file=self._load_templatable_config,
         )
 
-    def _register_loader(self, key: str) -> None:
-        if key not in self._valid_loader_keys:
-            raise KeyError(
-                f"Loader key *{key}* is not valid. Please use"
-                f"*{', '.join(self._valid_loader_keys)}* to set the key of loader."
-            )
-        self._loaders[key] = self
+    # def _register_loader(self, key: str) -> None:
+    #     if key not in self._valid_loader_keys:
+    #         raise KeyError(
+    #             f"Loader key *{key}* is not valid. Please use"
+    #             f"*{', '.join(self._valid_loader_keys)}* to set the key of loader."
+    #         )
+    #     self._loaders[key] = self
 
     def register(self, template_config_ops: TemplateConfigOpts) -> None:
         self._template_config_opts = template_config_ops
@@ -521,7 +521,7 @@ class TemplateConfigLoadable:
 class TemplateConfigLoaderWithAPIConfig(TemplateConfigLoadable):
     def __init__(self):
         super().__init__()
-        self._register_loader(key=ConfigLoadingOrderKey.APIs.value)
+        # self._register_loader(key=ConfigLoadingOrderKey.APIs.value)
 
         self._load_mocked_apis_from_data = self.load_config
         set_loading_function(
@@ -538,6 +538,8 @@ class TemplateConfigLoaderWithAPIConfig(TemplateConfigLoadable):
             for mock_api_name in mocked_apis_data.keys():
                 api_config = self._template_config_opts._deserialize_as_template_config
                 api_config.config_path = f"{mock_api_name}{api_config.config_file_tail}.yaml"
+                print(f"[DEBUG in TemplateConfigLoaderWithAPIConfig.load_config] mock_api_name: {mock_api_name}")
+                print(f"[DEBUG in TemplateConfigLoaderWithAPIConfig.load_config] api_config: {api_config}")
                 self._template_config_opts._set_mocked_apis(
                     api_key=mock_api_name,
                     api_config=api_config.deserialize(data=mocked_apis_data.get(mock_api_name, None)),
@@ -548,8 +550,29 @@ class TemplateConfigLoaderWithAPIConfig(TemplateConfigLoadable):
     #     pass
 
 
-class TemplateConfigLoader(TemplateConfigLoaderWithAPIConfig):
+class TemplateConfigLoader(TemplateConfigLoadable):
     """The layer for extending all the configuration loaders"""
+
+    # _loaders: Dict[str, "TemplateConfigLoadable"] = {
+    #     ConfigLoadingOrderKey.APIs.value: TemplateConfigLoaderWithAPIConfig(),
+    # }
+    _loaders: Dict[str, "TemplateConfigLoadable"] = {}
+
+    def __init__(self):
+        super().__init__()
+        self._loaders: Dict[str, "TemplateConfigLoadable"] = {
+            ConfigLoadingOrderKey.APIs.value: TemplateConfigLoaderWithAPIConfig(),
+        }
+
+    def register(self, template_config_ops: TemplateConfigOpts) -> None:
+        super().register(template_config_ops)
+        for k, v in self._loaders.items():
+            v.register(template_config_ops)
+            if k == ConfigLoadingOrderKey.APIs.value:
+                self._load_mocked_apis_from_data = self._loaders[k].load_config
+                set_loading_function(
+                    apis=self._load_mocked_apis_from_data,
+                )
 
 
 @dataclass(eq=False)

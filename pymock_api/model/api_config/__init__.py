@@ -295,6 +295,8 @@ class MockAPIs(_Config, _Checkable, TemplateConfigOpts, _Dividable):
 
     def _set_mocked_apis(self, api_key: str = "", api_config: Optional[MockAPI] = None) -> None:  # type: ignore[override]
         if api_key and api_config:
+            print(f"[DEBUG in MockAPIs._set_mocked_apis] api_key: {api_key}")
+            print(f"[DEBUG in MockAPIs._set_mocked_apis] api_config: {api_config}")
             self.apis[api_key] = api_config
         else:
             self.apis = {}
@@ -305,9 +307,6 @@ class MockAPIs(_Config, _Checkable, TemplateConfigOpts, _Dividable):
 
     @property
     def _config_file_format(self) -> str:
-        print(
-            f"[DEBUG in MockAPIs._config_file_format] self.template.values.api.config_path_format: {self.template.values.api.config_path_format}"
-        )
         return self.template.values.api.config_path_format
 
     @property

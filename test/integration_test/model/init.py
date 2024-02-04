@@ -66,46 +66,52 @@ class TestInitFunctions:
     def test_load_config_with_dividing_feature(self, yaml_config_path: str, expected_yaml_config_path: str):
         # Run utility function loads configuration to get config data
         dividing_config = load_config(yaml_config_path)
-        expected_config = load_config(expected_yaml_config_path)
+        # expected_config = load_config(expected_yaml_config_path)
 
         # Verify detail values
         assert dividing_config is not None
-        assert expected_config is not None
+        # assert expected_config is not None
 
-        # Check basic info
-        assert dividing_config.name == expected_config.name
-        assert dividing_config.description == expected_config.description
-
+        # # Check basic info
+        # assert dividing_config.name == expected_config.name
+        # assert dividing_config.description == expected_config.description
+        #
         # Check section
         assert dividing_config.apis is not None
-        assert expected_config.apis is not None
+        # assert expected_config.apis is not None
 
         # Check section *base*
         if "no-base" not in yaml_config_path:
             assert dividing_config.apis.base is not None
-            assert expected_config.apis.base is not None
-            assert dividing_config.apis.base.serialize() == expected_config.apis.base.serialize()
+        #     assert expected_config.apis.base is not None
+        #     assert dividing_config.apis.base.serialize() == expected_config.apis.base.serialize()
 
         # Check section *apis*
         assert dividing_config.apis.apis is not None
-        assert expected_config.apis.apis is not None
-        expected_config_apis = expected_config.apis.apis
-        # Compare the key of all mocked APIs
-        assert dividing_config.apis.apis.keys() == expected_config.apis.apis.keys()
-        # Compare the details of each mocked API
+        # assert expected_config.apis.apis is not None
+        # expected_config_apis = expected_config.apis.apis
+        # # Compare the key of all mocked APIs
+        # assert dividing_config.apis.apis.keys() == expected_config.apis.apis.keys()
+        # # Compare the details of each mocked API
         for api_name, api_config in dividing_config.apis.apis.items():
-            expected_api_config = expected_config_apis[api_name]
-            assert api_config is not None
-            assert expected_api_config is not None
-            # Check URL
-            assert api_config.url == expected_api_config.url
-            # Check HTTP request
-            assert api_config.http is not None
-            assert expected_api_config.http is not None
-            assert api_config.http.request is not None
-            assert expected_api_config.http.request is not None
-            assert api_config.http.request.serialize() == expected_api_config.http.request.serialize()
+            print(f"[DEBUG in test] api_name: {api_name}")
+            # expected_api_config = expected_config_apis[api_name]
+            # assert api_config is not None
+            # assert expected_api_config is not None
+            # # Check URL
+            # assert api_config.url == expected_api_config.url
+            # # Check HTTP request
+            # assert api_config.http is not None
+            # assert expected_api_config.http is not None
+            # assert api_config.http.request is not None
+            # assert expected_api_config.http.request is not None
+            # assert api_config.http.request.method == expected_api_config.http.request.method
+            # assert api_config.http.request.parameters == expected_api_config.http.request.parameters
+            print(f"[DEBUG in test] api_config.http.request.parameters: {api_config.http.request.parameters}")  # type: ignore
+            # print(f"[DEBUG in test] expected_api_config.http.request.parameters: {expected_api_config.http.request.parameters}")
+            # assert api_config.http.request.serialize() == expected_api_config.http.request.serialize()
             # Check HTTP response
-            assert api_config.http.response is not None
-            assert expected_api_config.http.response is not None
-            assert api_config.http.response.serialize() == expected_api_config.http.response.serialize()
+            # assert api_config.http.response is not None
+            # assert expected_api_config.http.response is not None
+            # assert api_config.http.response.serialize() == expected_api_config.http.response.serialize()
+        assert False
