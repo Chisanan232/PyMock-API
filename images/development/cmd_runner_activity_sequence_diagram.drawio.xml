@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2023-06-21T06:27:46.781Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="UE7GFMa_kR0_WLANB6b_" version="21.3.8" type="google">
+  <diagram id="OGFfPSg3NHsL9dp7TJ5e" name="cmd_runner_activity_sequence_diagram">
+    <mxGraphModel dx="1242" dy="771" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6xnwHW0KmOiLiOmS6Ubl-2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;" edge="1" source="6xnwHW0KmOiLiOmS6Ubl-1" parent="1" target="6xnwHW0KmOiLiOmS6Ubl-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="414" y="235" as="targetPoint" />
+            <mxPoint x="414" y="175" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="414" y="195" />
+              <mxPoint x="414" y="195" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6xnwHW0KmOiLiOmS6Ubl-3" value="Call dispatch function" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="342" y="265" width="144" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6xnwHW0KmOiLiOmS6Ubl-4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="6xnwHW0KmOiLiOmS6Ubl-3" parent="1" target="hfme2SEE2ZmMavfqwzgN-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="414" y="425" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-1" value="Current instance is responsible of current sub-command?" style="rhombus;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="324" y="665" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-2" value="no" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="hfme2SEE2ZmMavfqwzgN-1" parent="1" target="hfme2SEE2ZmMavfqwzgN-9">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="570" y="725" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-3" value="yes" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="hfme2SEE2ZmMavfqwzgN-1" parent="1" target="hfme2SEE2ZmMavfqwzgN-11">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="430" y="805" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-4" value="Get the first instance of class &lt;b&gt;CommandProcessor&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="328" y="375" width="171" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-5" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="hfme2SEE2ZmMavfqwzgN-4" target="hfme2SEE2ZmMavfqwzgN-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="485" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="414" y="485" />
+              <mxPoint x="414" y="485" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-6" value="Use attribute &lt;b&gt;responsible_subcommand&lt;/b&gt; to check whether current instance should handle it or not&amp;nbsp;&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="324" y="505" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-7" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="hfme2SEE2ZmMavfqwzgN-6" parent="1" target="hfme2SEE2ZmMavfqwzgN-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="685" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6xnwHW0KmOiLiOmS6Ubl-1" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="399" y="175" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-9" value="Get the next instance of class &lt;b&gt;CommandProcessor&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="570" y="605" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-10" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="hfme2SEE2ZmMavfqwzgN-9" target="hfme2SEE2ZmMavfqwzgN-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="725" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="655" y="545" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-11" value="Do something with the current instance which is responsible of current subcommand" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="317" y="835" width="194" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-12" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="hfme2SEE2ZmMavfqwzgN-11" parent="1" target="hfme2SEE2ZmMavfqwzgN-13">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="414" y="995" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfme2SEE2ZmMavfqwzgN-13" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="399" y="965" width="30" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
