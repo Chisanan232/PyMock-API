@@ -40,7 +40,7 @@ PyYAML = "^6.0"
 Flask = {version = "^3.0.2", extras = ["flask", "all"]}
 gunicorn = {version = ">=21.2,<24.0", extras = ["flask", "all"]}
 # Extra dependency of web framework *FastAPI* with ASGI server *Uvicorn*
-fastapi = {version = ">=0.110,<0.113", extras = ["fastapi", "all"]}
+fastapi = {version = ">=0.110,<0.116", extras = ["fastapi", "all"]}
 uvicorn = {version = ">=0.29,<0.31", extras = ["fastapi", "all"]}
 
 [tool.poetry.group.dev.dependencies]
@@ -60,7 +60,7 @@ pylint = "^3.1.0"
 Flask = "^3.0.2"
 gunicorn = ">=21.2,<24.0"
 # Dependency of web framework FastAPI
-fastapi = {extras = ["all"], version = ">=0.110,<0.113"}
+fastapi = {extras = ["all"], version = ">=0.110,<0.116"}
 uvicorn = {extras = ["standard"], version = ">=0.29,<0.31"}
 types-PyYAML = "^6.0.12.9"
 
