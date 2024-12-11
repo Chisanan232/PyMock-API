@@ -1,0 +1,3158 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mock your API server, e.g., HTTP API server, by YAML configuration and set up an application in minutes">
+      
+      
+        <meta name="author" content="Bryant Liu">
+      
+      
+      
+        <link rel="prev" href="../how-it-works/">
+      
+      
+        <link rel="next" href="../contributing/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+    
+    
+      
+        <title>Software architecture - PyMock-Server</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#software-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="PyMock-Server" class="md-header__button md-logo" aria-label="PyMock-Server" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PyMock-Server
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Software architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Chisanan232/PyMock-Server" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Chisanan232/PyMock-Server
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/version-requirements/" class="md-tabs__link">
+          
+  
+    
+  
+  Getting started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../configure-references/config-basic-info/" class="md-tabs__link">
+          
+  
+    
+  
+  Configure references
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../release_note/" class="md-tabs__link">
+          
+  
+    
+  
+  Release notes
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PyMock-Server" class="md-nav__button md-logo" aria-label="PyMock-Server" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    PyMock-Server
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Chisanan232/PyMock-Server" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Chisanan232/PyMock-Server
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/version-requirements/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Version requirements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/configure-your-api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure your APIs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/setup-web-server/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Set up web server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Command line usages
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Command line usages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../command-line-usage/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    subcommand
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_1" id="__nav_2_5_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            subcommand
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_1_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../command-line-usage/rest-server/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    rest-server
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_1_2" id="__nav_2_5_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_5_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            rest-server
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../command-line-usage/rest-server/subcmd-run/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    run
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../command-line-usage/rest-server/subcmd-get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    get
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../command-line-usage/rest-server/subcmd-add/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    add
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../command-line-usage/rest-server/subcmd-check/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    check
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../command-line-usage/rest-server/subcmd-sample/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    sample
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../command-line-usage/rest-server/subcmd-pull/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pull
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Configure references
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Configure references
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/config-basic-info/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Basic info
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configure-references/mocked-apis/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Mocked API
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Mocked API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configure-references/mocked-apis/template/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Template
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Template
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/mocked-apis/template/load/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Loading setting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/mocked-apis/template/config_path_values/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Values setting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/mocked-apis/template/apply/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apply setting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configure-references/mocked-apis/base/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Base
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Base
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configure-references/mocked-apis/apis/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/mocked-apis/apis/url/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    URL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configure-references/mocked-apis/apis/http/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    HTTP
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2_4_3" id="__nav_3_2_4_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            HTTP
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/mocked-apis/apis/http/request/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HTTP request
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/mocked-apis/apis/http/response/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HTTP response
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4_3_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configure-references/mocked-apis/apis/http/common/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Common
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2_4_3_4" id="__nav_3_2_4_3_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_2_4_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Common
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configure-references/mocked-apis/apis/http/common/item_element/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Item element
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Development
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-it-works/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How it works
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Software architecture
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Software architecture
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#program-entry-point-command-line-runner" class="md-nav__link">
+    <span class="md-ellipsis">
+      Program entry point - command line runner
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Program entry point - command line runner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command line features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-line-processors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command line processors
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line processors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command line options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subcommand-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      SubCommand features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SubCommand features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-config-file-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option --config - file operation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option --config - file operation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-web-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      run - web server
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="run - web server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../contributing/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4_2" id="__nav_4_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Join in developing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Join in developing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/developing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Developing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/reporting-a-bug/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reporting a bug
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/requesting-a-feature/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Requesting a feature or change
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../release_note/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Release notes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Release notes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release_note/version_0xx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Version 0.X.X
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#program-entry-point-command-line-runner" class="md-nav__link">
+    <span class="md-ellipsis">
+      Program entry point - command line runner
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Program entry point - command line runner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command line features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-line-processors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command line processors
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line processors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command line options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command line options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subcommand-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      SubCommand features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SubCommand features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-config-file-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option --config - file operation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option --config - file operation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-web-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      run - web server
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="run - web server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uml_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/Chisanan232/PyMock-Server/edit/master/docs/development/software-architecture.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/Chisanan232/PyMock-Server/raw/master/docs/development/software-architecture.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="software-architecture">Software architecture<a class="headerlink" href="#software-architecture" title="Permanent link">&para;</a></h1>
+<p>Software architecture is very important in a production because it's relative the flexibility and extensibility of the production.
+So it must have some designs applies to core functions codes.</p>
+<p>In <strong><em>PyMock-Server</em></strong> realm, it can divide to several sections to parse its software architecture:</p>
+<ul>
+<li>
+<p>Entry point of entire program</p>
+<ul>
+<li>Runner of command line</li>
+</ul>
+</li>
+<li>
+<p>Command line</p>
+<ul>
+<li>Entire command lines</li>
+<li>Entire command line options</li>
+</ul>
+</li>
+<li>
+<p>Features of command line</p>
+<ul>
+<li>Option <code>--config</code></li>
+<li>The sub-command line <code>run</code></li>
+</ul>
+</li>
+</ul>
+<p>Above all are some parts which have value or more complex to explain their details to developers.</p>
+<h2 id="program-entry-point-command-line-runner">Program entry point - command line runner<a class="headerlink" href="#program-entry-point-command-line-runner" title="Permanent link">&para;</a></h2>
+<p>The entry point of <strong><em>PyMock-Server</em></strong> command line tool. Its actually entry point is calling the function <code>run</code> in module
+<code>pymock_api.runner</code>.</p>
+<h3 id="uml">UML<a class="headerlink" href="#uml" title="Permanent link">&para;</a></h3>
+<p><img alt="software architecture - command runner" src="../../images/development/cmd_runner_software_architecture.drawio.png" /></p>
+<ul>
+<li>About the function which would be run as entry point <code>run</code>, it's a running logic of object <code>CommandRunner</code>.</li>
+<li>Object <code>CommandRunner</code> would keep instance of <code>ArgumentParser</code> and <code>CommandProcessor</code> to parse command line and run
+core logic of the current sub-command.</li>
+<li>Object <code>CommandRunner</code> would use function <code>dispatch_command_processor</code> to get the correct instance to handle current
+command line.</li>
+</ul>
+<h3 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h3>
+<p>About workflow of command line runer, it uses 2 types sequence diagram to explain the relationship between different objects
+and functions.</p>
+<ul>
+<li>Sequence diagram</li>
+</ul>
+<p><img alt="sequence diagram - command runner" src="../../images/development/cmd_runner_sequence_diagram.drawio.png" /></p>
+<p>From the sequence diagram, you could observe that function <code>dispatch_command_processor</code> would keep getting the correct
+instances of <code>CommandProcessor</code> to run current command line.</p>
+<p>However, how it gets the correct object to process current command line? That's the reason having below activity sequence
+diagram to explain that:</p>
+<ul>
+<li>Activity sequence diagram for getting <code>CommandProcessor</code></li>
+</ul>
+<p><img alt="activity sequence diagram - command runner" src="../../images/development/cmd_runner_activity_sequence_diagram.drawio.png" /></p>
+<p>In short, function <code>dispatch_command_processor</code> would iterate all instances of <code>CommandProcessor</code> to find the one which
+is responsible for current command line.</p>
+<p>Now you may have another question: it seems like that it has a <code>CommandProcessor</code> instance of list to let it find. So what
+is the list? When does the list would be generated?</p>
+<p>The answers of above would be in next section.</p>
+<h2 id="command-line-features">Command line features<a class="headerlink" href="#command-line-features" title="Permanent link">&para;</a></h2>
+<p>The core implementation of the command line. It would divide 2 sections here:</p>
+<ul>
+<li>Command line processors</li>
+<li>Command line options</li>
+</ul>
+<h3 id="command-line-processors">Command line processors<a class="headerlink" href="#command-line-processors" title="Permanent link">&para;</a></h3>
+<p>The logic which would run by the current command line you enter.</p>
+<p>All codes belong to here section, they all are responsible for <strong>what thing would happen after user run the command line</strong>.</p>
+<h4 id="uml_1">UML<a class="headerlink" href="#uml_1" title="Permanent link">&para;</a></h4>
+<p><img alt="software architecture - command line processor" src="../../images/development/cmd_ps_software_architecture.drawio.png" /></p>
+<ul>
+<li>
+<p>It has 4 base classes:</p>
+<ul>
+<li>
+<p><code>MetaCommand</code></p>
+<p>It's a metaclass for instantiating base class. It would auto-register objects which extends the base class be instantiated
+from this metaclass to list type protected variable <code>_COMMAND_CHAIN</code>.</p>
+</li>
+<li>
+<p><code>CommandProcessor</code></p>
+<p>It defines all attributes and functions for subclass to reuse or override to implement customize logic.</p>
+</li>
+<li>
+<p><code>BaseSubCmdComponent</code></p>
+<p>This is the base class should be extended by all subclasses which is the core running logic implementation of one specific
+sub-command line. And it also needs to be the return value of property <code>_subcmd_component</code> of each subclass which extends
+base class <code>CommandProcessor</code>.</p>
+</li>
+<li>
+<p><code>BaseCommandProcessor</code></p>
+<p>This is the base class which should be extended by all subclasses. This object be instantiated by metaclass <code>MetaCommand</code>
+and general object <code>CommandProcessor</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The list be used by function <code>dispatch_command_processor</code> is protected variable <code>_COMMAND_CHAIN</code>.</p>
+</li>
+<li>All subclasses, i.e., <code>NoSubCmd</code>, <code>SubCmdRun</code>, etc., extend <code>BaseCommandProcessor</code> and implement what thing they need
+to do if user run the command includes returning which component they should use to run the core logic of the sub-command line.</li>
+<li>All subclasses, i.e., <code>NoSubCmdComponent</code>, <code>SubCmdRunComponent</code>, etc., extend <code>BaseSubCmdComponent</code> and implement the
+truly core logic of the sub-command line with its options.</li>
+</ul>
+<details class="note">
+<summary>The great idea about <strong>auto-register</strong> refer to source code of project <strong><em>Gunicorn</em></strong></summary>
+<p>About the powerful design <strong>auto-register</strong> which has beautiful extension, it
+refers to the module <em>config</em> implementation of open source project <strong><em>Gunicorn</em></strong>.
+Please refer to <a href="https://github.com/benoitc/gunicorn/blob/master/gunicorn/config.py">its source code</a> if you have interesting in it.</p>
+</details>
+<h4 id="workflow_1">Workflow<a class="headerlink" href="#workflow_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Sequence diagram</li>
+</ul>
+<p><img alt="sequence diagram - auto register by meta class" src="../../images/development/meta-class_auto-register_sequence_diagram.drawio.png" /></p>
+<p>From above sequence diagram, it does auto-registration when initialize an object. It won't do something to iterate all objects
+and save them to list type object, it automates all things when you add one or more new subclasses which is responsible for new
+sub-command line.</p>
+<h4 id="extension">Extension<a class="headerlink" href="#extension" title="Permanent link">&para;</a></h4>
+<p>Here would demonstrate how to add one new sub-command processor in this software architecture.</p>
+<p>You'll have 3 things need to do:</p>
+<ul>
+<li>Command line argument</li>
+</ul>
+<p>New sub-command line must have options. So you need to define which sub-command line options it has.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># In module pymock_server.model.cmd_args</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">class</span> <span class="nc">SubcmdNewProcessArguments</span><span class="p">(</span><span class="n">ParserArguments</span><span class="p">):</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">arg_1</span><span class="p">:</span> <span class="nb">str</span>
+</span></code></pre></div>
+<ul>
+<li>Deserialization</li>
+</ul>
+<p>After defining new sub-command line's options, you should define how to deserialize it:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># In module pymock_server.model.cmd_args</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">class</span> <span class="nc">DeserializeParsedArgs</span><span class="p">:</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="c1"># ... some code</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="nd">@classmethod</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">def</span> <span class="nf">subcommand_new_process</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SubcmdNewProcessArguments</span><span class="p">:</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="k">return</span> <span class="n">SubcmdNewProcessArguments</span><span class="p">(</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>            <span class="n">subparser_name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">subcommand</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>            <span class="n">arg_1</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">arg_1</span><span class="p">,</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        <span class="p">)</span>
+</span></code></pre></div>
+<p>And also defining the utility function at module <strong><em>__init__</em></strong>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># In module pymock_server.model.__init__</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">class</span> <span class="nc">deserialize_args</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="c1"># ... some code</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="nd">@classmethod</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="k">def</span> <span class="nf">subcmd_new_process</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SubcmdNewProcessArguments</span><span class="p">:</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="k">return</span> <span class="n">DeserializeParsedArgs</span><span class="o">.</span><span class="n">subcommand_new_process</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</span></code></pre></div>
+<ul>
+<li>SubCommand process</li>
+</ul>
+<p>Now, it has sub-command line option data object and deserialization, we could implement what thing it should do.</p>
+<p>Here, we have 2 choices to implement: </p>
+<ol>
+<li>Override the function <code>_run</code> directly.</li>
+<li>Add new class extends class <code>BaseSubCmdComponent</code> and implement property <code>_subcmd_component</code>.</li>
+</ol>
+<p>Let's demonstrate all way to implement to you and explain their difference.</p>
+<ol>
+<li>
+<p>Override the function <code>_run</code> directly.</p>
+<p>In default, function <code>_run</code> would run the sub-command line core logic through the objects in component layer. In the other
+words, we also could override it directly without implement anything in component layer.</p>
+<ul>
+<li>
+<p>Pros:</p>
+<ul>
+<li>Decrease the number of class for implementing or maintaining.</li>
+<li>For the simple or easy logic, implement by this way could be more clear and short.</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>For the complex logic or large-scale feature, implement by this way would let the code in this module to be dirty and
+  complex so that developers be more harder to manage or maintain it.</li>
+</ul>
+</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># In module pymock_api.command.process</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># ... some code</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">class</span> <span class="nc">SubCmdNewProcess</span><span class="p">(</span><span class="n">BaseCommandProcessor</span><span class="p">):</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="k">def</span> <span class="nf">_parse_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SubcmdNewProcessArguments</span><span class="p">:</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="k">return</span> <span class="n">deserialize_args</span><span class="o">.</span><span class="n">subcmd_new_process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_cmd_arguments</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">))</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">SubcmdNewProcessArguments</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>        <span class="c1"># Do something ...</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is new sub-command line and get option *arg_1*: </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">arg_1</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+</li>
+<li>
+<p>Add new class extends class <code>BaseSubCmdComponent</code> and implement property <code>_subcmd_component</code>.</p>
+<p>Implement and manage the core logic in component layer. And the <strong><em>command.process</em></strong> module only needs to know which component
+object is responsible of this feature.</p>
+<ul>
+<li>
+<p>Pros:</p>
+<ul>
+<li>Decoupling the logics sub-command line processor and core logic of the sub-command line.</li>
+<li>Could be more higher cohesion of the core logic of sub-command line with its options.</li>
+<li>No matter how the sub-command logic complex is, it still could be more easier and maitainable for management.</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>More classes, more management.</li>
+<li>If the core logic is very easy and short, this way is a little laborious.</li>
+</ul>
+</li>
+</ul>
+<p>Implement the core logic in component layer:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># In module pymock_api.command.new_subcmd.component</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># ... some code</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">class</span> <span class="nc">SubCmdNewProcessComponent</span><span class="p">(</span><span class="n">BaseSubCmdComponent</span><span class="p">):</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">SubcmdNewProcessArguments</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="c1"># Do something ...</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is new sub-command line and get option *arg_1*: </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">arg_1</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Remember that it needs to let command line processor know which component object it should use to run the sub-command line core logic:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># In module pymock_api.command.process</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># ... some code</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">class</span> <span class="nc">SubCmdNewProcess</span><span class="p">(</span><span class="n">BaseCommandProcessor</span><span class="p">):</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="nd">@property</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="k">def</span> <span class="nf">_subcmd_component</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SubCmdRunComponent</span><span class="p">:</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        <span class="k">return</span> <span class="n">SubCmdNewProcessComponent</span><span class="p">()</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="k">def</span> <span class="nf">_parse_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SubcmdNewProcessArguments</span><span class="p">:</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>        <span class="k">return</span> <span class="n">deserialize_args</span><span class="o">.</span><span class="n">subcmd_new_process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_cmd_arguments</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">))</span>
+</span></code></pre></div>
+</li>
+</ol>
+<p>We finish all things if we want to extend one new sub-command line! Let's try to run it:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="go">&gt;&gt;&gt; mock new-ps --arg-1 test_value</span>
+</span></code></pre></div>
+<p>Unfortunately, you would get an error finally. Why? What you miss? Do you remember all the code in this software architecture
+only process the logic it should run by the current command line? But, how does it parse the command line and its options? So
+next section would tell you how to add new sub-command line and its options in their software architecture.</p>
+<h3 id="command-line-options">Command line options<a class="headerlink" href="#command-line-options" title="Permanent link">&para;</a></h3>
+<p>The logic which would parse the current command line and run something for it.</p>
+<p>All codes belong to here section, they all are responsible for <strong>defining the command line and its options to let <em>argpars</em></strong>
+<strong>understands how to parse the current command line.</strong></p>
+<h4 id="uml_2">UML<a class="headerlink" href="#uml_2" title="Permanent link">&para;</a></h4>
+<p><img alt="software architecture - command line options" src="../../images/development/cmd_options_software_architecture.drawio.png" /></p>
+<p>The software architecture here feature apply is mostly same as previous one section <a href="#uml_1">Command line processors</a>.</p>
+<ul>
+<li>
+<p>It has 3 base classes:</p>
+<ul>
+<li>
+<p><code>MetaCommandOption</code></p>
+<p>It's a metaclass for instantiating base class. It would auto-register objects which extends the base class be instantiated
+from this metaclass to list type data <code>COMMAND_OPTIONS</code>. If it is sub-command, it also saves sub-command line string to
+list type data <code>SUBCOMMAND</code>.</p>
+</li>
+<li>
+<p><code>CommandOption</code> (includes all subclasses of <code>BaseSubCommand</code>)</p>
+<p>It defines all attributes and functions for subclass to reuse or override to implement customize logic.</p>
+</li>
+<li>
+<p><code>BaseCmdOption</code>, <code>BaseSubCmdRunOption</code>, etc.</p>
+<p>This is the base class which should be extended by all subclasses. This object be instantiated by metaclass <code>MetaCommandOption</code>
+and general object <code>CommandOption</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Every sub-command has their own base class. For example, sub-command line <code>run</code> with <code>BaseSubCmdRunOption</code>, <code>config</code>
+with <code>BaseSubCmdConfigOption</code> and so on.</p>
+</li>
+<li>The list be used by function <code>get_all_subcommands</code> is variable <code>SUBCOMMAND</code>.</li>
+<li>The list be used by function <code>make_options</code> is variable <code>COMMAND_OPTIONS</code>.</li>
+<li>All subclasses, i.e., <code>Version</code> extends <code>BaseCmdOption</code>, <code>WebAppType</code> extends <code>BaseSubCmdRunOption</code>, <code>ConfigPath</code>
+extends <code>BaseSubCmdConfigOption</code>, etc., means the specific options under the sub-command line.</li>
+</ul>
+<h4 id="workflow_2">Workflow<a class="headerlink" href="#workflow_2" title="Permanent link">&para;</a></h4>
+<p>Because the software architecture of here section is mostly same with <a href="#command-line-processors">Command line processors</a>, its
+workflow also could refer to its <a href="#workflow_1">workflow</a>.</p>
+<h4 id="extension_1">Extension<a class="headerlink" href="#extension_1" title="Permanent link">&para;</a></h4>
+<p>Here would demonstrate how to extend or add new sub-command feature.</p>
+<p>You'll have 4 things:</p>
+<ul>
+<li>Add new attribute of data object <strong>SubCommand</strong></li>
+</ul>
+<p>Object <code>SubCommand</code> is the standard for <strong><em>PyMock-Server</em></strong> to recognize which sub-command it has. So let's add one new sub-command
+line here:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># In module pymock_server.command.options</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nd">@dataclass</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">class</span> <span class="nc">SubCommand</span><span class="p">:</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">Base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subcommand&quot;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">Run</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;run&quot;</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">Config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;config&quot;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">Check</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;check&quot;</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="hll">    <span class="n">NewProcess</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;new-ps&quot;</span>
+</span></span></code></pre></div>
+<ul>
+<li>Implement new class about subcommand <code>new-ps</code></li>
+</ul>
+<p>Add new class extends base class <code>BaseSubCommand</code> and set value at attribute <code>sub_parser</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># In module pymock_server.command.options</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">class</span> <span class="nc">SubCommandNewProcessOption</span><span class="p">(</span><span class="n">BaseSubCommand</span><span class="p">):</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">sub_parser</span><span class="p">:</span> <span class="n">SubParserAttr</span> <span class="o">=</span> <span class="n">SubParserAttr</span><span class="p">(</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="n">name</span><span class="o">=</span><span class="n">SubCommand</span><span class="o">.</span><span class="n">NewProcess</span><span class="p">,</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;New subcommand for demonstration,&quot;</span><span class="p">,</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="p">)</span>
+</span></code></pre></div>
+<ul>
+<li>Instantiate class with metaclass for subcommand <code>new-ps</code></li>
+</ul>
+<p>Instantiate a base class for adding options.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># In module pymock_server.command.options</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">BaseSubCmdNewProcessOption</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">MetaCommandOption</span><span class="p">(</span><span class="s2">&quot;BaseSubCmdNewProcessOption&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">SubCommandNewProcessOption</span><span class="p">,),</span> <span class="p">{})</span>
+</span></code></pre></div>
+<p>It would auto-register this sub-command line into <code>SUBCOMMAND</code>. We have sub-command line <code>new-ps</code>, let's add its options.</p>
+<ul>
+<li>Extend the subcommand object to add its option(s)</li>
+</ul>
+<p>Add new command option with extending <code>BaseSubCmdNewProcessOption</code> and set needed attributes in it:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># In module pymock_server.command.options</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">class</span> <span class="nc">Arg_1</span><span class="p">(</span><span class="n">BaseSubCmdNewProcessOption</span><span class="p">):</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">cli_option</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;--arg-1&quot;</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;arg_1&quot;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">help_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A parameter for demonstration of extending new subcommand and new option.&quot;</span>
+</span></code></pre></div>
+<ul>
+<li><code>cli_option</code>: Define the option usage via command line.</li>
+<li><code>name</code>: The attribute to get the option value from <em>argpars</em>.</li>
+<li><code>help_description</code>: The description would be displayed if you run <code>--help</code>.</li>
+</ul>
+<p>Finally, don't forget to let command line process know which sub-command line is its responsibility by overriding the class
+attribute <code>responsible_subcommand</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># In module pymock_server.command.process</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># ... some code</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">class</span> <span class="nc">SubCmdNewProcess</span><span class="p">(</span><span class="n">BaseCommandProcessor</span><span class="p">):</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="hll">    <span class="n">responsible_subcommand</span> <span class="o">=</span> <span class="n">SubCommand</span><span class="o">.</span><span class="n">NewProcess</span>
+</span></span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="c1"># ... some code</span>
+</span></code></pre></div>
+<p>Now, let's try to run the <strong><em>PyMock-Server</em></strong> with new sub-command:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="go">&gt;&gt;&gt; mock new-ps --arg-1 test_value</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="go">This is new sub-command line and get option *arg_1*: test_value</span>
+</span></code></pre></div>
+<p>Congratulation! It works finely as out expect.</p>
+<h2 id="subcommand-features">SubCommand features<a class="headerlink" href="#subcommand-features" title="Permanent link">&para;</a></h2>
+<p>The features which be run in each command lines.</p>
+<h3 id="option-config-file-operation">Option <code>--config</code> - file operation<a class="headerlink" href="#option-config-file-operation" title="Permanent link">&para;</a></h3>
+<p>Here focus on a small part --- a feature of one specific option <code>--config</code> under sub-command <code>run</code>.</p>
+<h4 id="uml_3">UML<a class="headerlink" href="#uml_3" title="Permanent link">&para;</a></h4>
+<p><img alt="software architecture - operation with file" src="../../images/development/file_operatrions_software_architecture.drawio.png" /></p>
+<ul>
+<li>Object <code>MockHTTPServer</code> uses function <code>load_config</code> to get all detail settings.</li>
+<li>Data object <code>APIConfig</code> provides function to read and deserialize the configuration file content.</li>
+<li>Currently, it only supports parsing YAML file by object <code>YAML</code>.</li>
+</ul>
+<h4 id="extension_2">Extension<a class="headerlink" href="#extension_2" title="Permanent link">&para;</a></h4>
+<p>Here demonstrate how to extend this feature to parse other file formatter.</p>
+<ul>
+<li>File operation</li>
+</ul>
+<p>If you want to use other file formatter, e.g., JSON, you could extend the base class of file operation _<code>BaseFileOperation</code>
+to implement needed features.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># In module pymock_server.command.options</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># ... some code</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">class</span> <span class="nc">JSON</span><span class="p">(</span><span class="n">_BaseFileOperation</span><span class="p">):</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>        <span class="c1"># Read the configuration file content</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>        <span class="c1"># Write data into file</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>        <span class="c1"># Serialize dat object to string value</span>
+</span></code></pre></div>
+<p>Because currently it won't have option in command line to control which way it should use to serialize or deserialize configuration
+file, so we need to manually modify the code to use it.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># In module pymock_server.model.api_config</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">class</span> <span class="nc">APIConfig</span><span class="p">(</span><span class="n">_Config</span><span class="p">):</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;*The entire configuration*&quot;&quot;&quot;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="n">_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">_apis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MockAPIs</span><span class="p">]</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="hll">    <span class="n">_configuration</span><span class="p">:</span> <span class="n">_BaseFileOperation</span> <span class="o">=</span> <span class="n">JSON</span><span class="p">()</span>
+</span></span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">apis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MockAPIs</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>        <span class="c1"># ... some code</span>
+</span></code></pre></div>
+<p>Finally, we could use JSON type file as our configuration formatter.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="go">&gt;&gt;&gt; mock -c ./api.json</span>
+</span></code></pre></div>
+<h3 id="run-web-server"><code>run</code> - web server<a class="headerlink" href="#run-web-server" title="Permanent link">&para;</a></h3>
+<p>This is the core feature of <strong><em>PyMock-Server</em></strong>. It does 2 things:</p>
+<ul>
+<li>Set up web application with the API from the detail settings of configuration.</li>
+<li>Run the web application by SGI server.</li>
+</ul>
+<h4 id="uml_4">UML<a class="headerlink" href="#uml_4" title="Permanent link">&para;</a></h4>
+<p><img alt="software architecture - web server with sgi server" src="../../images/development/server_software_architecture.drawio.png" /></p>
+<ul>
+<li>The sub-command line processor <code>SubCmdRun</code> would use function <code>setup_wsgi</code> or <code>setup_asgi</code> to run the web application.</li>
+<li>All the way to run web application by factory pattern in <strong><em>PyMock-Server</em></strong>.</li>
+<li>The functions as factory callee to set up web application is <code>create_flask_app</code> and <code>create_fastapi_app</code>.</li>
+<li>Functions <code>create_flask_app</code> or <code>create_fastapi_app</code> would use adapter <code>MockHTTPServer</code> to set up all APIs as Python
+code with Python web framework <strong><em>Flask</em></strong> or <strong><em>FastAPI</em></strong>.</li>
+</ul>
+<h4 id="extension_3">Extension<a class="headerlink" href="#extension_3" title="Permanent link">&para;</a></h4>
+<p>If you have your own customize Python web framework, you also could extend this features by your own one.</p>
+<p>Here would demonstrate how to extend it to implement your own web server.</p>
+<p>First, the entire web server should be divided to 2 parts:</p>
+<ul>
+<li>Server implementation from Python web framework</li>
+<li>Server gateway interface (a.k.a SGI) server</li>
+</ul>
+<p>They mean you should extend all below classes to implement:</p>
+<ul>
+<li>
+<p>For setting up web application by generating Python code</p>
+<ul>
+<li><code>BaseAppServer</code></li>
+</ul>
+</li>
+<li>
+<p>For running web application by SGI server</p>
+<ul>
+<li><code>BaseSGIServer</code></li>
+<li><code>BaseCommandOption</code></li>
+</ul>
+</li>
+</ul>
+<p>Don't forget it also needs to import the Python web framework into <strong><em>PyMock-Server</em></strong> to let it could generate Python code about
+APIs with configuration.</p>
+<ul>
+<li>Import web library</li>
+</ul>
+<p>2 Things you need to implement: importing the web framework and check importing the web framework.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># In module pymock_server._utils.importing</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">class</span> <span class="nc">import_web_lib</span><span class="p">:</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="c1"># Some code ...</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="nd">@staticmethod</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="k">def</span> <span class="nf">foo_web_lib</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;foo_web_lib&quot;</span><span class="p">:</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>        <span class="kn">import</span> <span class="nn">foo_web_lib</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>        <span class="k">return</span> <span class="n">foo_web_lib</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>    <span class="c1"># Some code ...</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>    <span class="nd">@staticmethod</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>    <span class="k">def</span> <span class="nf">foo_web_lib_ready</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>        <span class="k">return</span> <span class="n">import_web_lib</span><span class="o">.</span><span class="n">_chk_lib_ready</span><span class="p">(</span><span class="n">import_web_lib</span><span class="o">.</span><span class="n">foo_web_lib</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Importing way may be different with different web framework</p>
+<p>The importing way should be based on how to use the customized Python web framework.</p>
+</div>
+<ul>
+<li><code>BaseAppServer</code></li>
+</ul>
+<p>Extend the web application feature about how PyMock-Server should set up it? How to initial the web application by the customized
+Python web framework? How to add new API by the customized web framework?</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># In module pymock_server.server.application</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">class</span> <span class="nc">FooWebLibrary</span><span class="p">(</span><span class="n">BaseAppServer</span><span class="p">):</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;foo_web_lib.Foo&quot;</span><span class="p">:</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>        <span class="c1"># How to set up web application instance by this web library</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>        <span class="k">return</span> <span class="n">import_web_lib</span><span class="o">.</span><span class="n">foo_web_lib</span><span class="p">()</span><span class="o">.</span><span class="n">Foo</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>    <span class="k">def</span> <span class="nf">_add_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_config</span><span class="p">:</span> <span class="n">MockAPI</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>        <span class="c1"># How to add API by this web library</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;self.web_application.add_web_route(</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="s2">            path=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url_path</span><span class="p">(</span><span class="n">api_config</span><span class="p">,</span><span class="w"> </span><span class="n">base_url</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;, methods=[&quot;</span><span class="si">{</span><span class="n">cast</span><span class="p">(</span><span class="n">HTTPRequest</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_ensure_http</span><span class="p">(</span><span class="n">api_config</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;request&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;]</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="s2">            )(</span><span class="si">{</span><span class="n">api_name</span><span class="si">}</span><span class="s2">)</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="s2">        &quot;&quot;&quot;</span>
+</span></code></pre></div>
+<ul>
+<li><code>BaseSGIServer</code></li>
+</ul>
+<p>Implement how to run web application by your own customized Python web framework. In exactly, it just generates a command line
+with options.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># In module pymock_server.server.sgi.cmd</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="k">class</span> <span class="nc">FooSGIServer</span><span class="p">(</span><span class="n">BaseSGIServer</span><span class="p">):</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="k">def</span> <span class="nf">_init_cmd_option</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseCommandOption</span><span class="p">:</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>        <span class="k">return</span> <span class="n">FooWebSGIServerCmdOption</span><span class="p">()</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="nd">@property</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="k">def</span> <span class="nf">entry_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>        <span class="k">return</span> <span class="s2">&quot;foonicorn&quot;</span>
+</span></code></pre></div>
+<ul>
+<li><code>BaseCommandOption</code></li>
+</ul>
+<p>Previous one implement the command line entry point, here implement each options how to set it.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># In module pymock_server.server.sgi.cmdoption</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="k">class</span> <span class="nc">FooWebSGIServerCmdOption</span><span class="p">(</span><span class="n">BaseCommandOption</span><span class="p">):</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>    <span class="k">def</span> <span class="nf">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>        <span class="c1"># Set the option about binding the service at one or more specific hosts</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>        <span class="k">if</span> <span class="n">address</span><span class="p">:</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_address</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>            <span class="n">binding_addr</span> <span class="o">=</span> <span class="n">address</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>        <span class="k">elif</span> <span class="n">host</span> <span class="ow">and</span> <span class="n">port</span><span class="p">:</span>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>            <span class="n">binding_addr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There are 2 ways to pass arguments: using *address* or using *host* and *port*.&quot;</span><span class="p">)</span>
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;--bind </span><span class="si">{</span><span class="n">binding_addr</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>    <span class="k">def</span> <span class="nf">workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>        <span class="c1"># Set the option about how many workers could handle the requests</span>
+</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;--workers </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-19-18"><a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a>
+</span><span id="__span-19-19"><a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a>    <span class="k">def</span> <span class="nf">log_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-19-20"><a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a>        <span class="c1"># Set the option about log level</span>
+</span><span id="__span-19-21"><a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;--log-level </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>Now, we have done the core implementation, then we just leave some utility functions which we need to add.</p>
+<ul>
+<li>Utility function in module <code>pymock_api.server.sgi.__init__</code></li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># In module pymock_server.server.sgi.__init__</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="k">class</span> <span class="nc">setup_server_gateway</span><span class="p">:</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="c1"># Some code ...</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>    <span class="nd">@classmethod</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">web_app</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span> <span class="n">module_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FooSGIServer</span><span class="p">:</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>        <span class="k">if</span> <span class="n">module_dict</span><span class="p">:</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>            <span class="bp">cls</span><span class="o">.</span><span class="n">_ensure_function_exists</span><span class="p">(</span><span class="n">web_app</span><span class="p">,</span> <span class="n">module_dict</span><span class="p">)</span>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="hll">        <span class="k">return</span> <span class="n">FooSGIServer</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">web_app</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">()&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">web_app</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)</span> <span class="k">else</span> <span class="n">web_app</span><span class="p">)</span>
+</span></span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="c1"># Some code ...</span>
+</span></code></pre></div>
+<p>Please take a look at the code line 10, it's the key line to let SGI server to catch which factory function it should use to
+generate the web application. Here usage should base on which way should use by your own customized Python web framework.</p>
+<ul>
+<li>Utility function in module <code>pymock_api.server.__init__</code></li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># In module pymock_server.server.__init__</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="c1"># Some code ...</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="n">foo_app</span><span class="p">:</span> <span class="s2">&quot;foo_web_lib.Foo&quot;</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="c1"># Some code ...</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="k">def</span> <span class="nf">create_foo_app</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;foo_web_lib.Foo&quot;</span><span class="p">:</span>
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>    <span class="n">load_app</span><span class="o">.</span><span class="n">by_foo</span><span class="p">()</span>
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>    <span class="k">return</span> <span class="n">foo_app</span>
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="c1"># Some code ...</span>
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="k">def</span> <span class="nf">setup_foosgi</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FooSGIServer</span><span class="p">:</span>
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>    <span class="k">return</span> <span class="n">setup_server_gateway</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="n">web_app</span><span class="o">=</span><span class="n">create_foo_app</span><span class="p">,</span> <span class="n">module_dict</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="c1"># Some code ...</span>
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="k">class</span> <span class="nc">load_app</span><span class="p">:</span>
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>    <span class="nd">@classmethod</span>
+</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a>    <span class="nd">@ensure_importing</span><span class="p">(</span><span class="n">import_web_lib</span><span class="o">.</span><span class="n">foo_web_lib</span><span class="p">)</span>
+</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a>    <span class="k">def</span> <span class="nf">by_foo</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a>        <span class="k">global</span> <span class="n">foo_app</span>
+</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a>        <span class="n">config</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_config_path</span><span class="p">()</span>
+</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a>        <span class="n">foo_app</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_initial_mock_server</span><span class="p">(</span><span class="n">config_path</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">app_server</span><span class="o">=</span><span class="n">FooWebLibrary</span><span class="p">())</span><span class="o">.</span><span class="n">web_app</span>
+</span><span id="__span-21-28"><a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a>
+</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a><span class="c1"># Some code ...</span>
+</span></code></pre></div>
+<p>The global variable <code>foo_app</code> is the variable which web application instance will be saved at. Function <code>create_foo_app</code> is
+the factory function to generate web application. Function <code>setup_foosgi</code> is the one which runs the web application which be
+set up by your own customized Python web framework.</p>
+<ul>
+<li>Add option value in one specific function in module <code>pymock_api.command.process</code></li>
+</ul>
+<p>Finally, we need to add a new value to let option <code>--app-type</code> could recognize and dispatch it to set up and run the web
+application by your own customized Python web framework.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># In module pymock_server.command.process</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="c1"># Some code ...</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="k">class</span> <span class="nc">SubCmdRun</span><span class="p">(</span><span class="n">BaseCommandProcessor</span><span class="p">):</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>    <span class="c1"># Some code ...</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>    <span class="k">def</span> <span class="nf">_initial_server_gateway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lib</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">lib</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>            <span class="n">web_lib</span> <span class="o">=</span> <span class="n">import_web_lib</span><span class="o">.</span><span class="n">auto_ready</span><span class="p">()</span>
+</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">web_lib</span><span class="p">:</span>
+</span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a>                <span class="k">raise</span> <span class="n">NoValidWebLibrary</span>
+</span><span id="__span-22-14"><a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_initial_server_gateway</span><span class="p">(</span><span class="n">lib</span><span class="o">=</span><span class="n">web_lib</span><span class="p">)</span>
+</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a>        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;flask&quot;</span><span class="p">,</span> <span class="n">lib</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+</span><span id="__span-22-16"><a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_server_gateway</span> <span class="o">=</span> <span class="n">setup_wsgi</span><span class="p">()</span>
+</span><span id="__span-22-17"><a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a>        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span> <span class="n">lib</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+</span><span id="__span-22-18"><a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_server_gateway</span> <span class="o">=</span> <span class="n">setup_asgi</span><span class="p">()</span>
+</span><span id="__span-22-19"><a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a><span class="hll">        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="n">lib</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+</span></span><span id="__span-22-20"><a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a><span class="hll">            <span class="bp">self</span><span class="o">.</span><span class="n">_server_gateway</span> <span class="o">=</span> <span class="n">setup_foosgi</span><span class="p">()</span>
+</span></span><span id="__span-22-21"><a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-22-22"><a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a>            <span class="k">raise</span> <span class="n">InvalidAppType</span>
+</span><span id="__span-22-23"><a id="__codelineno-22-23" name="__codelineno-22-23" href="#__codelineno-22-23"></a>
+</span><span id="__span-22-24"><a id="__codelineno-22-24" name="__codelineno-22-24" href="#__codelineno-22-24"></a><span class="c1"># Some code ...</span>
+</span></code></pre></div>
+<p>All things you need to do is done! Let's try to run the command line to test its feature:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="go">&gt;&gt;&gt; mock --app-type foo</span>
+</span></code></pre></div>
+<p>If you could keep observing the log message which be generated by web application as you expect, congratulation you extend the
+feature successfully!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../how-it-works/" class="md-footer__link md-footer__link--prev" aria-label="Previous: How it works">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                How it works
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../contributing/" class="md-footer__link md-footer__link--next" aria-label="Next: Contributing">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Contributing
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 - 2023 Bryant Liu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>
